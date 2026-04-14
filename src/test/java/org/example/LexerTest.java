@@ -122,7 +122,7 @@ class LexerTest {
 
     @Test
     void whitespaceIsIgnored() {
-        var tokens = scan("  x   =   2  ");
+        var tokens = scan("  x  =   2  ");
         assertEquals(3, tokens.stream()
                 .filter(t -> t.type() != TokenType.EOF)
                 .count());

@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
+
     private final List<Token> tokens;
-    private int index =  0;
+    private int index = 0;
 
     public Parser(List<Token> tokens) {
         this.tokens = tokens;
@@ -95,8 +96,9 @@ public class Parser {
         expect(TokenType.LEFT_PARENTHESES);
         List<String> params = new ArrayList<>();
         if (!check(TokenType.RIGHT_PARENTHESES)) {
-            do params.add(expect(TokenType.IDENTIFIER).value());
-            while (match(TokenType.COMMA));
+            do {
+                params.add(expect(TokenType.IDENTIFIER).value());
+            } while (match(TokenType.COMMA));
         }
         expect(TokenType.RIGHT_PARENTHESES);
 
@@ -134,9 +136,9 @@ public class Parser {
         Expr left = parseAddition();
 
         while (check(TokenType.EQUAL) ||
-                check(TokenType.LESS)  || check(TokenType.LESS_EQUAL) ||
-                check(TokenType.GREATER) || check(TokenType.GREATER_EQUAL)
-        ) {
+                check(TokenType.LESS) || check(TokenType.LESS_EQUAL) ||
+                check(TokenType.GREATER) || check(TokenType.GREATER_EQUAL))
+        {
             TokenType op = advance().type();
             Expr right = parseAddition();
             left = new Expr.Binary(left, op, right);
@@ -175,7 +177,7 @@ public class Parser {
             return new Expr.Literal(value);
         }
 
-        if (match(TokenType.TRUE))  return new Expr.Literal(1);
+        if (match(TokenType.TRUE)) return new Expr.Literal(1);
         if (match(TokenType.FALSE)) return new Expr.Literal(0);
 
         if (match(TokenType.LEFT_PARENTHESES)) {
@@ -190,8 +192,9 @@ public class Parser {
             if (match(TokenType.LEFT_PARENTHESES)) {
                 List<Expr> args = new ArrayList<>();
                 if (!check(TokenType.RIGHT_PARENTHESES)) {
-                    do args.add(parseExpression());
-                    while (match(TokenType.COMMA));
+                    do {
+                        args.add(parseExpression());
+                    } while (match(TokenType.COMMA));
                 }
                 expect(TokenType.RIGHT_PARENTHESES);
                 return new Expr.Call(name, args);

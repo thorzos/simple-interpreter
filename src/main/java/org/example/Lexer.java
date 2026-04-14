@@ -25,9 +25,13 @@ public class Lexer {
         this.programText = programText;
     }
 
+    private char moveNext() {
+        return programText.charAt(index++);
+    }
+
     public List<Token> getTokens() {
         while (index < programText.length()) {
-            char current = programText.charAt(index++);
+            char current = moveNext();
 
             switch (current) {
                 case ' ', '\t', '\r', '\n', '\0' -> {}
@@ -80,7 +84,7 @@ public class Lexer {
         identifier.append(current);
 
         while (index < programText.length() && (Character.isLetterOrDigit(programText.charAt(index)) || programText.charAt(index) == '_')) {
-            identifier.append(programText.charAt(index++));
+            identifier.append(moveNext());
         }
         String txt = identifier.toString();
         tokens.add(new Token(KEYWORDS.getOrDefault(txt, TokenType.IDENTIFIER), txt));
@@ -91,7 +95,7 @@ public class Lexer {
         number.append(current);
 
         while (index < programText.length() && Character.isDigit(programText.charAt(index))) {
-            number.append(programText.charAt(index++));
+            number.append(moveNext());
         }
 
         tokens.add(new Token(TokenType.NUMBER, number.toString()));
