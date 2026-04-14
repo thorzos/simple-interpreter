@@ -19,29 +19,29 @@ public class Parser {
         return stmts;
     }
 
-    private Token lookAhead() {
+    private Token peek() {
         return tokens.get(index);
     }
 
-    private Token move() {
+    private Token advance() {
         return tokens.get(index++);
     }
 
     private boolean check(TokenType type) {
-        return lookAhead().type() == type;
+        return peek().type() == type;
     }
 
     private boolean match(TokenType type) {
         if (check(type)) {
-            move();
+            advance();
             return true;
         }
         return false;
     }
 
     private Token expect(TokenType type) {
-        if (check(type)) return move();
-        throw new RuntimeException("Expected " + type + " but got " + lookAhead().type());
+        if (check(type)) return advance();
+        throw new RuntimeException("Expected " + type + " but got " + peek().type());
     }
 
     private Stmt parseStatement() {
@@ -137,7 +137,7 @@ public class Parser {
                 check(TokenType.LESS)  || check(TokenType.LESS_EQUAL) ||
                 check(TokenType.GREATER) || check(TokenType.GREATER_EQUAL)
         ) {
-            TokenType op = move().type();
+            TokenType op = advance().type();
             Expr right = parseAddition();
             left = new Expr.Binary(left, op, right);
         }
@@ -149,7 +149,7 @@ public class Parser {
         Expr left = parseMultiply();
 
         while (check(TokenType.PLUS) || check(TokenType.MINUS)) {
-            TokenType op = move().type();
+            TokenType op = advance().type();
             Expr right = parseMultiply();
             left = new Expr.Binary(left, op, right);
         }
@@ -161,7 +161,7 @@ public class Parser {
         Expr left = parsePrimary();
 
         while (check(TokenType.MULTIPLY) || check(TokenType.DIVIDE)) {
-            TokenType op = move().type();
+            TokenType op = advance().type();
             Expr right = parsePrimary();
             left = new Expr.Binary(left, op, right);
         }
@@ -171,7 +171,7 @@ public class Parser {
 
     private Expr parsePrimary() {
         if (check(TokenType.NUMBER)) {
-            int value = Integer.parseInt(move().value());
+            int value = Integer.parseInt(advance().value());
             return new Expr.Literal(value);
         }
 
@@ -185,7 +185,7 @@ public class Parser {
         }
 
         if (check(TokenType.IDENTIFIER)) {
-            String name = move().value();
+            String name = advance().value();
 
             if (match(TokenType.LEFT_PARENTHESES)) {
                 List<Expr> args = new ArrayList<>();
@@ -200,7 +200,7 @@ public class Parser {
             return new Expr.Variable(name);
         }
 
-        throw new RuntimeException("Unexpected token: " + lookAhead().type());
+        throw new RuntimeException("Unexpected token: " + peek().type());
     }
 
 }
