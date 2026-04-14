@@ -30,6 +30,7 @@ class ParserTest {
     void assignVariable() {
         var stmts = parse("y = x");
         var assign = (Stmt.Assign) stmts.getFirst();
+
         assertInstanceOf(Expr.Variable.class, assign.value());
         assertEquals("x", ((Expr.Variable) assign.value()).name());
     }
@@ -96,6 +97,7 @@ class ParserTest {
     void ifWithoutElse() {
         var stmts = parse("if x > 0 then y = 1");
         var if_ = (Stmt.If) stmts.getFirst();
+
         assertNull(if_.else_());
     }
 
@@ -103,6 +105,7 @@ class ParserTest {
     void nestedIf() {
         var stmts = parse("if x == 1 then if y == 2 then z = 3 else z = 4");
         var outer = (Stmt.If) stmts.getFirst();
+
         assertInstanceOf(Stmt.If.class, outer.then());
     }
 
@@ -121,6 +124,7 @@ class ParserTest {
         var stmts = parse("while true do x = 1");
         var while_ = (Stmt.While) stmts.getFirst();
         var cond = (Expr.Literal) while_.condition();
+
         assertEquals(1, cond.value()); // true == 1
     }
 
@@ -138,6 +142,7 @@ class ParserTest {
     void funDeclarationWithParams() {
         var stmts = parse("fun add(a, b) { return a + b }");
         var fun = (Stmt.FunDecl) stmts.getFirst();
+
         assertEquals("add", fun.name());
         assertEquals(List.of("a", "b"), fun.params());
     }
@@ -146,6 +151,7 @@ class ParserTest {
     void funBodyIsBlock() {
         var stmts = parse("fun add(a, b) { return a + b }");
         var fun = (Stmt.FunDecl) stmts.getFirst();
+
         assertInstanceOf(Stmt.Block.class, fun.body());
     }
 
@@ -154,6 +160,7 @@ class ParserTest {
         var stmts = parse("fun f(n) { return n * 2 }");
         var fun = (Stmt.FunDecl) stmts.getFirst();
         var block = (Stmt.Block) fun.body();
+
         assertInstanceOf(Stmt.Return.class, block.stmts().getFirst());
     }
 
@@ -172,6 +179,7 @@ class ParserTest {
     void functionCallWithArgs() {
         var stmts = parse("x = add(1, 2)");
         var call = (Expr.Call) ((Stmt.Assign) stmts.getFirst()).value();
+
         assertEquals("add", call.name());
         assertEquals(2, call.args().size());
     }
@@ -180,6 +188,7 @@ class ParserTest {
     void functionCallNestedExprArgs() {
         var stmts = parse("x = add(a + 1, b * 2)");
         var call = (Expr.Call) ((Stmt.Assign) stmts.getFirst()).value();
+
         assertInstanceOf(Expr.Binary.class, call.args().get(0));
         assertInstanceOf(Expr.Binary.class, call.args().get(1));
     }
@@ -187,12 +196,14 @@ class ParserTest {
     @Test
     void multipleTopLevelStatements() {
         var stmts = parse("x = 2\ny = 3");
+
         assertEquals(2, stmts.size());
     }
 
     @Test
     void sampleTestProgram() {
         var stmts = parse("x = 2\ny = (x + 2) * 2");
+
         assertEquals(2, stmts.size());
         assertInstanceOf(Stmt.Assign.class, stmts.get(0));
         assertInstanceOf(Stmt.Assign.class, stmts.get(1));
@@ -205,6 +216,7 @@ class ParserTest {
     @Test
     void sampleTestProgram2() {
         var stmts = parse("x = 20\nif x > 10 then y = 100 else y = 0");
+
         assertEquals(2, stmts.size());
         assertInstanceOf(Stmt.If.class, stmts.get(1));
     }
@@ -212,7 +224,7 @@ class ParserTest {
     @Test
     void sampleTestProgram3() {
         var stmts = parse("x = 0 \n y = 0 \n while x < 3 do if x == 1 then y = 10 else y = y + 1, x = x + 1");
-        System.out.println(stmts);
+
         assertEquals(3, stmts.size());
         assertInstanceOf(Stmt.While.class, stmts.get(2));
     }

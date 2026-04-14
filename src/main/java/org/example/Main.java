@@ -1,15 +1,28 @@
 package org.example;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Main {
 
-    public static void main(String[] args) {
-        String test = "xyooooodsfisja = \t \0 10";
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        Lexer scanner = new Lexer(test);
+        StringBuilder sb = new StringBuilder();
+        String currentLine;
+        while ((currentLine = reader.readLine()) != null) {
+            sb.append(currentLine).append('\n');
+        }
+        try {
+            Lexer lexer = new Lexer(sb.toString());
+            Parser parser = new Parser(lexer.getTokens());
+            var interpretedVars = new Interpreter().interpret(parser.parse());
 
-        var tokens = scanner.getTokens();
+            interpretedVars.forEach((var, val) -> System.out.println(var + ": " + val));
 
-        System.out.println(tokens);
-
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 }
