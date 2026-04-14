@@ -172,9 +172,19 @@ public class Parser {
     }
 
     private Expr parsePrimary() {
+        if (match(TokenType.MINUS)) {
+            Expr operand = parsePrimary();
+            return new Expr.Binary(new Expr.Literal(0), TokenType.MINUS, operand);
+        }
+
         if (check(TokenType.NUMBER)) {
-            int value = Integer.parseInt(advance().value());
-            return new Expr.Literal(value);
+            String number = advance().value();
+            try {
+                int value = Integer.parseInt(number);
+                return new Expr.Literal(value);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Invalid number: " + number);
+            }
         }
 
         if (match(TokenType.TRUE)) return new Expr.Literal(1);
@@ -203,7 +213,7 @@ public class Parser {
             return new Expr.Variable(name);
         }
 
-        throw new RuntimeException("Unexpected token: " + peek().type());
+        throw new RuntimeException("Unexpected token: " + peek());
     }
 
 }

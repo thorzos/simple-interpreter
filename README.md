@@ -2,7 +2,7 @@
 
 This project is a custom interpreter for a simple dynamically-typed programming language, written in Java.
 It reads source code from stdin, runs it through a Lexer and Parser into an AST
-and evaluates it using modern Java 21 features (Sealed Interfaces and Pattern Matching).
+and evaluates it using stable Java 21 features (Sealed Interfaces and Pattern Matching).
 The final state of all variables is printed to stdout.
 
 ## Requirements
@@ -21,6 +21,7 @@ Type your program line by line, then press `Ctrl+D` to run it.
 
 ## Features
 - Variables, basic math, conditionals, loops, functions with return, multiple statements
+- The language uses 32-bit signed integers (be careful of looping around)
 
 ## Examples
 

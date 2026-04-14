@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 public class InterpreterTest {
@@ -10,6 +11,29 @@ public class InterpreterTest {
         Lexer lexer = new Lexer(source);
         Parser parser = new Parser(lexer.getTokens());
         return new Interpreter().interpret(parser.parse());
+    }
+
+    @Test
+    public void test_Unary() {
+        String input =
+                """
+                x = -10
+                """;
+
+        Map<String, Integer> result = runCode(input);
+
+        assertEquals(1, result.size());
+        assertEquals(-10, result.get("x"));
+    }
+
+    @Test
+    public void test_NumberBiggerThanInteger_throwsRuntimeException() {
+        String input =
+                """
+                x = %d
+                """.formatted(Long.MAX_VALUE);
+
+        assertThrows(RuntimeException.class, () -> runCode(input));
     }
 
     @Test

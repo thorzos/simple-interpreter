@@ -65,7 +65,7 @@ public class Lexer {
                     } else if (Character.isDigit(current)) {
                         scanNumber(current);
                     } else {
-                        System.err.println("Unexpected character: " + current);
+                        throw new RuntimeException("Unexpected character: " + current);
                     }
                 }
             }

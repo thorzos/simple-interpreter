@@ -21,8 +21,10 @@ public class Main {
 
             interpretedVars.forEach((var, val) -> System.out.println(var + ": " + val));
 
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             System.err.println("Error: " + e.getMessage());
+        } catch (StackOverflowError error) {
+            System.err.println("Stack Overflow error: " + error.getMessage());
         }
     }
 }

@@ -8,8 +8,11 @@ public class Interpreter {
     private final Environment globalVars = new Environment();
 
     public Map<String, Integer> interpret(List<Stmt> stmtList) {
-        stmtList.forEach(stmt -> apply(stmt, globalVars));
-
+        try {
+            stmtList.forEach(stmt -> apply(stmt, globalVars));
+        } catch (ReturnInterrupt e) {
+            throw new RuntimeException("'return' was used outside function");
+        }
         return globalVars.getLocalVars();
     }
 
@@ -73,6 +76,14 @@ public class Interpreter {
         Stmt.FunDecl fun = globalVars.getFun(expr.name());
 
         Environment funEnv = new Environment(globalVars);
+
+        if (expr.args().size() != fun.params().size()) {
+            throw new RuntimeException(
+                    "Function " + expr.name() +
+                    " expects " + fun.params().size() +
+                    " arguments but got " + expr.args().size());
+        }
+
         for (int i = 0; i < fun.params().size(); i++) {
             funEnv.setVar(fun.params().get(i), evaluate(expr.args().get(i), env));
         }
